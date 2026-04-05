@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { blogPosts } from '../../data/posts';
+
+export function getStaticPaths() {
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+---
+
+<BaseLayout title={`${post.title} | HomePro Services Blog`} description={post.excerpt}>
+  <article class="card article">
+    <p class="meta">{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} · {post.service}</p>
+    <h1>{post.title}</h1>
+    <div class="chips">
+      {post.tags.map((tag: string) => (
+        <span>{tag}</span>
+      ))}
+    </div>
+    {post.body.split('\n\n').map((paragraph: string) => (
+      <p>{paragraph}</p>
+    ))}
+    <a class="button" href="/blog">← Back to blog</a>
+  </article>
+
+  <style>
+    .meta {
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .chips span {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.6rem;
+      font-weight: 700;
+    }
+
+    .article p {
+      line-height: 1.6;
+    }
+
+    .button {
+      margin-top: 0.5rem;
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="HomePro Services | HVAC, Plumbing & Electrical">
+  <section class="hero card">
+    <h1>Reliable HVAC, Plumbing & Electrical Services</h1>
+    <p>
+      A complete Astro website template for local home service businesses. Promote your core services,
+      publish useful blog content, and help homeowners find answers quickly.
+    </p>
+    <div class="actions">
+      <a class="button" href="/services/hvac">Explore Services</a>
+      <a class="button secondary" href="/blog">Visit Blog</a>
+    </div>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <h2>HVAC Services</h2>
+      <p>AC repair, furnace installation, heat pump maintenance, and indoor air quality solutions.</p>
+      <a href="/services/hvac">Learn more →</a>
+    </article>
+
+    <article class="card">
+      <h2>Plumbing Services</h2>
+      <p>Leak detection, drain cleaning, fixture upgrades, and water heater repairs.</p>
+      <a href="/services/plumbing">Learn more →</a>
+    </article>
+
+    <article class="card">
+      <h2>Electrical Services</h2>
+      <p>Panel upgrades, lighting installation, troubleshooting, and code-compliant rewiring.</p>
+      <a href="/services/electrical">Learn more →</a>
+    </article>
+  </section>
+
+  <style>
+    .hero p {
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .button.secondary {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .grid {
+      margin-top: 1.25rem;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</BaseLayout>
