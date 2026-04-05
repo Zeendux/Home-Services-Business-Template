@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { allTags, blogPosts } from '../../data/posts';
+
+const sortedPosts = [...blogPosts].sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<BaseLayout title="Home Services Blog | HomePro Services">
+  <section class="card">
+    <h1>Home Services Blog</h1>
+    <p class="intro">Search by article title and filter by tags to quickly find relevant homeowner tips.</p>
+
+    <input id="searchInput" type="search" placeholder="Search article titles..." aria-label="Search article titles" />
+
+    <div class="tag-filters" aria-label="Tag filters">
+      <button class="tag active" type="button" data-tag="all">All</button>
+      {allTags.map((tag) => (
+        <button class="tag" type="button" data-tag={tag}>{tag}</button>
+      ))}
+    </div>
+
+    <div id="posts" class="posts">
+      {sortedPosts.map((post) => (
+        <article class="post card" data-title={post.title.toLowerCase()} data-tags={post.tags.join('|').toLowerCase()}>
+          <p class="meta">{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} · {post.service}</p>
+          <h2><a href={`/blog/${post.slug}`}>{post.title}</a></h2>
+          <p>{post.excerpt}</p>
+          <div class="chips">
+            {post.tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p id="emptyState" class="empty hidden">No articles match your search and selected tag.</p>
+  </section>
+
+  <script>
+    const searchInput = document.querySelector('#searchInput');
+    const tags = Array.from(document.querySelectorAll('.tag'));
+    const posts = Array.from(document.querySelectorAll('.post'));
+    const emptyState = document.querySelector('#emptyState');
+
+    let activeTag = 'all';
+
+    const applyFilters = () => {
+      const query = (searchInput instanceof HTMLInputElement ? searchInput.value : '').trim().toLowerCase();
+
+      let visibleCount = 0;
+      for (const post of posts) {
+        const title = post.getAttribute('data-title') ?? '';
+        const tagData = post.getAttribute('data-tags') ?? '';
+
+        const matchesSearch = title.includes(query);
+        const matchesTag = activeTag === 'all' || tagData.includes(activeTag.toLowerCase());
+
+        const isVisible = matchesSearch && matchesTag;
+        post.classList.toggle('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      }
+
+      emptyState?.classList.toggle('hidden', visibleCount > 0);
+    };
+
+    searchInput?.addEventListener('input', applyFilters);
+
+    for (const tagButton of tags) {
+      tagButton.addEventListener('click', () => {
+        activeTag = tagButton.getAttribute('data-tag') ?? 'all';
+
+        for (const btn of tags) {
+          btn.classList.toggle('active', btn === tagButton);
+        }
+
+        applyFilters();
+      });
+    }
+  </script>
+
+  <style>
+    .intro,
+    .meta {
+      color: var(--muted);
+    }
+
+    #searchInput {
+      margin-top: 0.5rem;
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      padding: 0.75rem 0.9rem;
+      font-size: 1rem;
+    }
+
+    .tag-filters {
+      display: flex;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      margin-top: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .tag {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 999px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tag.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .posts {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .post h2 {
+      margin-top: 0.2rem;
+      margin-bottom: 0.4rem;
+      font-size: 1.2rem;
+    }
+
+    .post h2 a {
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.7rem;
+    }
+
+    .chips span {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.6rem;
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .empty {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</BaseLayout>
